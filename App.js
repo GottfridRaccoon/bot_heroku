@@ -1,17 +1,17 @@
 const Telegram =require( 'node-telegram-bot-api')
 const filesystem = require('fs')
-const token = '1015454315:AAE4Pri3dlFPlnceH9DC67g7w4ge5C17fK8'
+const token = '1015454315:AAGoHh-52nc8mzKa1P33TKu5J0XkIP3dbfw'
 const option = {polling:true}
 const gottfrid_bot = new Telegram(token, option)
 const filefolder = 'logs/log.txt'
 let note =[]
-let currDate = `${new Date().getHours()}:${new Date().getMinutes()}`
-
+let currDate = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
+console.log(currDate)
 
 
 gottfrid_bot.onText(/\/bream(.+)/,(msg,match)=>{
     
-        const [chatId, personName, resp,photobream] =   [msg.chat.id, msg.from.username,  match[1], 'img/bream.jpg']
+        const [chatId, personName, resp, photobream] =  [msg.chat.id, msg.from.username,  match[1], 'img/bream.jpg']
         gottfrid_bot.sendPhoto(chatId,
                             photobream,
                             {
@@ -23,14 +23,20 @@ gottfrid_bot.onText(/\/bream(.+)/,(msg,match)=>{
 
 })
 //напоминание
-gottfrid_bot.onText(/\/reminder(.+) at (.+)/,(message, match)=>{
-            const chatId = message.chat.id
-            const usrId = message.from.username
+gottfrid_bot.onText(/\/reminder(.+) at ([0-9]{2}):([0-9]{2})/ ,(message, match)=>{
+    const [chatId,usrId,usrName] = [message.chat.id, message.from.id,message.from.username]
+          //  const chatId =message.chat.id
+          //  const usrId =message.from.id
+        
             let text = match[1]
-            let time = match[2]
+            // let hours = match[2]
+            // let minutes =match [3]
+            const time = `${match[2]}:${match[3]}`
+            console.log(time)
             note.push ({'id':usrId, 
                         'time':time,
-                        'text':text
+                        'text':text,
+                       'username': usrName
                      })
 
                      gottfrid_bot.sendMessage(chatId, 'Напомню')
@@ -41,11 +47,12 @@ gottfrid_bot.onText(/\/reminder(.+) at (.+)/,(message, match)=>{
         //   let [hours, minutes] = [new Date().getHours(), new Date().getMinutes()]
 
         
-
+        let date = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
+    
         note.map((item, i) => {
 
-            if (note[i]['time'] === currDate) {
-                gottfrid_bot.sendMessage(chatId,`@${note[i]['id']},вы должны ${note[i]['text']}`)
+            if (note[i]['time'] === date) {
+                gottfrid_bot.sendMessage(chatId,`@${note[i]['username']},вы должны ${note[i]['text']}`)
                 note.splice(i, 1)
             }
         })
@@ -57,9 +64,3 @@ gottfrid_bot.onText(/\/reminder(.+) at (.+)/,(message, match)=>{
     
 
 
-//gottfrid_bot.on('message', (msg) => {
-  //  const chatId = msg.chat.id;
-
-    // send a message to the chat acknowledging receipt of their message
- //   gottfrid_bot.sendMessage(chatId, 'Received your message');
-//});
