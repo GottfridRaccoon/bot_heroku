@@ -6,7 +6,10 @@ const gottfrid_bot = new Telegram(token, option)
 const filefolder = 'logs/log.txt'
 let note =[]
 let currDate = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
-console.log(currDate)
+  
+
+//console.log(currDate)
+
 
 
 gottfrid_bot.onText(/\/bream(.+)/,(msg,match)=>{
@@ -24,41 +27,48 @@ gottfrid_bot.onText(/\/bream(.+)/,(msg,match)=>{
 })
 //напоминание
 gottfrid_bot.onText(/\/reminder(.+) at ([0-9]{2}):([0-9]{2})/ ,(message, match)=>{
-    const [chatId,usrId,usrName] = [message.chat.id, message.from.id,message.from.username]
-          //  const chatId =message.chat.id
-          //  const usrId =message.from.id
-        
-            let text = match[1]
-            // let hours = match[2]
-            // let minutes =match [3]
-            const time = `${match[2]}:${match[3]}`
-            console.log(time)
-            note.push ({'id':usrId, 
-                        'time':time,
-                        'text':text,
-                       'username': usrName
-                     })
+ const [chatId,usrId,usrName] = [message.chat.id, message.from.id,message.from.username]
 
-                     gottfrid_bot.sendMessage(chatId, 'Напомню')
-                    
-                     
 
-    setInterval(() => {
-        //   let [hours, minutes] = [new Date().getHours(), new Date().getMinutes()]
+ if(Number.isNaN(match[2]) || Number.isNaN(match[3]))
+    { 
+        console.log('sssss')
+     gottfrid_bot.sendMessage(chatId, 'Ошибка при вводе времени')
 
-        
-        let date = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
-    
-        note.map((item, i) => {
+    } 
+     else  
+     {
+  
 
-            if (note[i]['time'] === date) {
-                gottfrid_bot.sendMessage(chatId,`@${note[i]['username']},вы должны ${note[i]['text']}`)
-                note.splice(i, 1)
-            }
-        })
-    }, 1000)
 
-    filesystem.appendFileSync(filefolder, `/reminder by @${usrId} at ${currDate} in ${chatId} \r\n`)
+     gottfrid_bot.sendMessage(chatId, 'Напомню');
+     let text = match[1]
+     const time = `${match[2]}:${match[3]}`
+
+     //  console.log(currDate)
+     note.push({
+         'id': usrId,
+         'time': time,
+         'text': text,
+         'username': usrName
+     })
+     setInterval(() => {
+         // let date= currDate передача по ссылке не работает не меняя своего значения
+         let date = `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes()}`
+
+
+         note.map((item, i) => {
+             //  console.log(date)
+             if (note[i]['time'] === date) {
+                 gottfrid_bot.sendMessage(chatId, `@${note[i]['username']},вы должны ${note[i]['text']}`)
+                 note.splice(i, 1)
+             }
+         })
+     }, 1000)
+
+     filesystem.appendFileSync(filefolder, `/reminder by @${usrId} at ${currDate} in ${chatId} \r\n`)
+}
+  
 
    })
     
