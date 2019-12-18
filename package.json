@@ -4,6 +4,8 @@
   "description": "",
   "main": "App.js",
   "dependencies": {
+    "config": "^3.2.4",
+    "mariadb": "^2.1.4",
     "node-telegram-bot-api": "^0.40.0"
   },
   "devDependencies": {},
