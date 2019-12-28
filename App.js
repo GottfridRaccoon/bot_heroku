@@ -2,10 +2,39 @@ const Telegram =require( 'node-telegram-bot-api')
 const filesystem = require('fs')
 const config = require('config')
 const token = config.get('token')
+const koa = require('koa')
 const option = {polling:true}
-const gottfrid_bot = new Telegram(token, option)
+const gottfrid_bot = new Telegram(token)
+const server = new koa()
+const Router =require('koa-router')
+const port = config.get('port')
+const router = Router()
+const Parser = require('koa-bodyparser')
 
-let note =[]
+
+  gottfrid_bot.setWebHook(`${config.get('url')}/bot`)
+    router.post('/bot', contxt =>{
+        const {body} = contxt.request
+        gottfrid_bot.processUpdate(body)
+        console.log(contxt)
+        contxt.status =200
+    }
+
+    )
+
+        
+        server.use(Parser())
+        server.use (router.routes())
+        
+       
+
+        server.listen(port, ()=>{
+            console.log(`Server port : ${port}`)
+        })
+
+
+
+        let note =[]
 const files = {
     johny: 'img/Johny.jpg',
     bream: 'img/bream.jpg',
@@ -27,7 +56,7 @@ gottfrid_bot.onText(/\/bream(.+)/,(message,match)=>{
         filesystem.appendFileSync(files.log,`/bream by @${personName} at ${currDate} in ${chatId} \r\n`)
 })
     gottfrid_bot.onText(/\/hereJohny(.+)/,(message, match)=>{
-        const [chatId, resp, usrName] = [message.chat.id, match[1], ,message.from.username]
+        const [chatId, resp, usrName] = [message.chat.id, match[1] ,message.from.username]
         gottfrid_bot.sendPhoto(chatId,
             files.johny,
             {
