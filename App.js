@@ -4,15 +4,13 @@ const config = require("config")
 const token = config.get("token")
 const gottfrid_bot = new Telegram(token, {polling : true})
 let note =[]
-const mariadb = require('mariadb')
-const username = config.get('user')
-const passwd = config.get('password')
-const hostname = config.get('host')
-let Telegnames = []
+//const mariadb = require('mariadb')
+//const username = config.get('user')
+//const passwd = config.get('password')
+//const hostname = config.get('host')
+//let Telegnames = []
 const Database = require('./link.js')
-
- let db =new Database()
-
+let db =new Database()
 
 const files = {
     johny: "img/Johny.jpg",
@@ -20,8 +18,8 @@ const files = {
     log: "logs/log.txt",
     raccoon : "img/got.png"
 }
-let currDate = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
 
+let currDate = `${new Date().getHours().toString().padStart(2,'0')}:${new Date().getMinutes()}`
 gottfrid_bot.onText(/\/bream(.+)/,(message,match)=>{ 
 console.log(new Date().getTime())
         const [chatId, personName, resp, msgId] =  [message.chat.id, message.from.username,  
@@ -32,47 +30,30 @@ console.log(new Date().getTime())
                                                    
         gottfrid_bot.sendSticker(chatId,
                             files.bream,
-                          // {
-                            //    caption: `${resp}, Вам от @${personName}`
-                            //}
+                         
         )
         filesystem.appendFileSync(files.log,`/bream by @${personName} at ${currDate} in ${chatId} \r\n`)
 })
     gottfrid_bot.onText(/\/herejohny(.+)/,(message, match)=>{
-
         const msgId = message.message_id
         gottfrid_bot.deleteMessage(message.chat.id,msgId)
-        
-     
-
         const [chatId, resp, usrName ] = [message.chat.id, match[1] ,message.from.username , message.message_id] 
-        
         gottfrid_bot.sendMessage(chatId,`${resp}, лови топор`)
         gottfrid_bot.sendSticker(chatId,
             files.johny
-           // {
-               // caption: `${resp}, лови топор`
-           // }
+         
         )
         filesystem.appendFileSync(files.log, `/hereJohny by @${usrName} at ${currDate} in ${chatId} \r\n`)
 
     })
-//напоминание
 gottfrid_bot.onText(/\/reminder(.+) at ([01]?[0-9]|2[0-3]):([0-5]?[0-9])/ ,(message, match)=>{
         const [chatId,usrId,usrName, msgId] = [message.chat.id, message.from.id,message.from.username]
-//попробуй шsInteger =number
         gottfrid_bot.deleteMessage(chatId,msgId)
         const hours = match[2].toString().padStart(2, '0')
-        let minutes =match[3]
-        console.log(hours)
-        console.log(minutes)
-   //if (/[01]?[0-9]|2[0-3]/.test(hours) && /[0-5]?[0-9]/.test(minutes))
-    //{ 
-            gottfrid_bot.sendMessage(chatId, 'Напомню');
-            let text = match[1]
-            const time = `${hours}:${minutes}`
-
-    //  console.log(currDate)
+                   let minutes =match[3]
+                   gottfrid_bot.sendMessage(chatId, 'Напомню');
+                   let text = match[1]
+                   const time = `${hours}:${minutes}`
     note.push({
         'id': usrId,
         'time': time,
@@ -80,19 +61,14 @@ gottfrid_bot.onText(/\/reminder(.+) at ([01]?[0-9]|2[0-3]):([0-5]?[0-9])/ ,(mess
         'username': usrName
     })
             setInterval(() => {
-        // let date= currDate передача по ссылке не работает не меняя своего значения
                 let date = `${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes()}`
-
-
                 note.map((item, i) => {
-                    //  console.log(date)
                     if (note[i]['time'] === date) {
                         gottfrid_bot.sendMessage(chatId, `@${note[i]['username']},вы должны ${note[i]['text']}`)
                         note.splice(i, 1)
                     }
                 })
             }, 1000)
-            //}
             filesystem.appendFileSync(files.log, `/reminder by @${usrName} at ${currDate} in ${chatId} \r\n`)    
         })
             
@@ -113,48 +89,19 @@ gottfrid_bot.onText(/\/mow/,message=>{
     gottfrid_bot.deleteMessage(message.chat.id, msgId)
     gottfrid_bot.sendMessage(message.chat.id, `NO MOW`)    
 })
-//gottfrid_bot.getChat(chatId, msg=>{console.log(msg.chat.username)})
 
-
-
-// testnames.map(val => {
-//     pool.query({ rowsAsArray: true, sql: `INSERT INTO  test (fname) VALUES ('${val}')` })
-//         .then(result => console.log(result))
-// }
-
-
-// )
-
-let users =[]
-let data = []
-//pool.query ({rowsAsArray: true, sql: `SEECT * from testing`})
-            //    .then((res) =>{data.push(res)})
-gottfrid_bot.on('message', () => {
-    
+gottfrid_bot.on('message', () => {    
     gottfrid_bot.getUpdates({ limit: 1 })
     .then((update) => {
-       // return new Promise
-        db.createQuery(update[0].message.from.id,update[0].message.from.first_name,update[0].message.from.last_name ,update[0].message.from.username)
-       
-       //console.log(update[0].message.from.first_name)
-         
+        db.createQuery(update[0].message.from.id,update[0].message.from.first_name,update[0].message.from.last_name ,update[0].message.from.username)   
     })
-    
-    
-    .catch(err => console.log(err))    
-    
-    
-       
+    .catch(err => console.log(err))        
+})
 
-   // users.filter((a,b) => {//при каждом вызове перезаписывает массив по новой'
-   // if (a=b){
-    //    pool.query({ rowsAsArray: true, sql: `INSERT INTO test(fname) VALUES('${a}')` })
-  //  }
-
-     
-   // })
-
-    
+gottfrid_bot.onText(/\/setGlobalRank \@([A-Za-z0-9]+[A-Za-z0-9/_]*) ([0-9])/gi,(msg, match)=>{
+ let usrId = msg.from.id
+  
+    db.setGlobalRank(match[1], match[2],usrId)
 })
 gottfrid_bot.onText(/\/balldestiny (.+)/, (msg) => {
     let rand = Math.round(Math.random() * 20)
@@ -228,22 +175,14 @@ gottfrid_bot.onText(/\/balldestiny (.+)/, (msg) => {
 })
 
 
-
-
-
 gottfrid_bot.onText(/\/whoami/, (msg, match)=>{
     let str =""
-  //  str=str+"<table>"
  for (let key in msg.from){
-    
      if (msg.from[key] != msg.from.id){
-         //str=str+"<tr>"
-         str =str+ `${key} => <b>${msg.from[key]}</b>\n`
-        
+         str =str+ `${key} => <b>${msg.from[key]}</b>\n`    
      }
-
  }
- //str=str+"</table>"
-    gottfrid_bot.sendMessage(msg.chat.id, text = `${str}`,{ parse_mode: 'HTML' })
+   gottfrid_bot.sendMessage(msg.chat.id, text = `${str}`,{ parse_mode: 'HTML' })
 
 })
+
