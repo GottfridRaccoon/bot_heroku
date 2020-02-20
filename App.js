@@ -186,3 +186,4 @@ gottfrid_bot.onText(/\/whoami/, (msg, match)=>{
 
 })
 
+
