@@ -1,1 +1,1 @@
-web:nohup node App.js
+web:nohup node App.js &

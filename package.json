@@ -15,7 +15,7 @@
     },
     "devDependencies": {},
     "scripts": {
-        "start": "node App"
+        "start": "nohup node App &"
     },
     "engines": {
         "node": "13.0.1"
