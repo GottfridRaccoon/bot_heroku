@@ -1,5 +1,4 @@
-/logs
-/img
+
 /node_modules/**/*
 /sertificate
 .vscode/
