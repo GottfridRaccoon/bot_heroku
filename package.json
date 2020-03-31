@@ -1,23 +1,26 @@
 {
-  "name": "bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "App.js",
-  "dependencies": {
-    "config": "^3.2.5",
-    "koa": "^2.11.0",
-    "koa-bodyparser": "^4.2.1",
-    "koa-router": "^7.4.0",
-    "mariadb": "^2.2.0",
-    "node-telegram-bot-api": "^0.40.0",
-    "nvm": "0.0.4",
-    "tg-resolve": "^1.3.1"
-  },
-  "devDependencies": {},
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    "name": "bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "App.js",
+    "dependencies": {
+        "config": "^3.2.5",
+        "koa": "^2.11.0",
+        "koa-bodyparser": "^4.2.1",
+        "koa-router": "^7.4.0",
+        "mariadb": "^2.2.0",
+        "node-telegram-bot-api": "^0.40.0",
+        "nvm": "0.0.4",
+        "tg-resolve": "^1.3.1"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "start": "node App"
+    },
+    "engines": {
+        "node": "13.0.1"
+    },
+    "keywords": [],
+    "author": "Alexey Kruzhkin",
+    "license": "ISC"
 }
